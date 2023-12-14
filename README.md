@@ -1,1 +1,1 @@
-# Brad: an AI agent with financial intelligence
+# Brad: an AI agent for your financial health
