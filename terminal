@@ -1,0 +1,7 @@
+django-admin startproject finance_manager
+cd finance_manager
+python manage.py startapp debt_manager
+python manage.py startapp budget_tracker
+python manage.py startapp goals
+python manage.py startapp bookkeeping
+python manage.py startapp debt_advisor 
