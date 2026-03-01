@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - AgentBrad{% endblock %}
+
+{% block content %}
+<h1>Financial Dashboard</h1>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Account Balances</h5>
+            </div>
+            <div class="card-body">
+                {% if account_balances %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Account</th>
+                            <th>Type</th>
+                            <th class="text-end">Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for account in account_balances %}
+                        <tr>
+                            <td>{{ account.name }}</td>
+                            <td>{{ account.get_account_type_display }}</td>
+                            <td class="text-end">${{ account.balance|default:"0.00" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-muted">No accounts found. Create your first account to get started.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Key Metrics</h5>
+            </div>
+            <div class="card-body">
+                {% if metrics %}
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Current Ratio</span>
+                        <span>{{ metrics.current_ratio|default:"N/A" }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Quick Ratio</span>
+                        <span>{{ metrics.quick_ratio|default:"N/A" }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Debt-to-Equity</span>
+                        <span>{{ metrics.debt_to_equity_ratio|default:"N/A" }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Gross Profit Margin</span>
+                        <span>{% if metrics.gross_profit_margin %}{{ metrics.gross_profit_margin }}%{% else %}N/A{% endif %}</span>
+                    </li>
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5>Recent Transactions</h5>
+                <a href="{% url 'bookkeeping:transaction-create' %}" class="btn btn-primary btn-sm">New Transaction</a>
+            </div>
+            <div class="card-body">
+                {% if recent_transactions %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Reference</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for txn in recent_transactions %}
+                        <tr>
+                            <td>{{ txn.date }}</td>
+                            <td>{{ txn.reference_number }}</td>
+                            <td>{{ txn.description|truncatewords:10 }}</td>
+                            <td><span class="badge bg-{{ txn.status|lower }}">{{ txn.get_status_display }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <a href="{% url 'bookkeeping:transaction-list' %}">View all transactions</a>
+                {% else %}
+                <p class="text-muted">No transactions yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -51,7 +51,8 @@ class UserProgress(models.Model):
         ('HIGH', 'High'),
         ('MEDIUM', 'Medium'),
         ('LOW', 'Low'),
-    ])
+    ], default='MEDIUM')
+    points = models.IntegerField(default=0)
     achievements = models.JSONField(default=list)
     
     def __str__(self):

@@ -1,8 +1,10 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
-from ..models import Reminder, DebtAccount
+from ..models import Reminder, Message, ConversationSession
+from debt_manager.models import DebtAccount
+
 
 class ReminderService:
     def __init__(self, user):
@@ -11,9 +13,8 @@ class ReminderService:
     def create_payment_reminders(self):
         """Create reminders for upcoming debt payments"""
         debts = DebtAccount.objects.filter(user=self.user)
-        
+
         for debt in debts:
-            # Create reminder 3 days before due date
             reminder_date = debt.due_date - timedelta(days=3)
             Reminder.objects.get_or_create(
                 user=self.user,
@@ -42,31 +43,38 @@ class ReminderService:
             scheduled_time__lte=now,
             is_active=True
         )
-        
+
         for reminder in due_reminders:
             self._send_reminder(reminder)
             self._update_reminder_schedule(reminder)
 
     def _send_reminder(self, reminder):
         """Send reminder via email and in-app notification"""
-        # Send email
         send_mail(
             subject=reminder.title,
             message=reminder.message,
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[self.user.email],
         )
-        
-        # Create in-app notification
-        Message.objects.create(
-            session=self._get_active_session(),
-            content=reminder.message,
-            is_user=False,
-            message_type='REMINDER'
-        )
-        
+
+        session = self._get_active_session()
+        if session:
+            Message.objects.create(
+                session=session,
+                content=reminder.message,
+                is_user=False,
+                message_type='REMINDER'
+            )
+
         reminder.last_sent = timezone.now()
         reminder.save()
+
+    def _get_active_session(self):
+        """Get the active conversation session for the user"""
+        return ConversationSession.objects.filter(
+            user=self.user,
+            end_time__isnull=True
+        ).first()
 
     def _update_reminder_schedule(self, reminder):
         """Update reminder schedule based on repeat interval"""
@@ -76,4 +84,4 @@ class ReminderService:
             reminder.scheduled_time += timedelta(weeks=1)
         elif reminder.repeat_interval == 'MONTHLY':
             reminder.scheduled_time += timedelta(days=30)
-        reminder.save() 
+        reminder.save()

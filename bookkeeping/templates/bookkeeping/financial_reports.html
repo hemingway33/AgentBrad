@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Financial Reports - AgentBrad{% endblock %}
+
+{% block content %}
+<h1>Financial Reports</h1>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header"><h5>Trial Balance</h5></div>
+            <div class="card-body">
+                {% if trial_balance %}
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Account</th>
+                            <th class="text-end">Debit</th>
+                            <th class="text-end">Credit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in trial_balance %}
+                        <tr>
+                            <td>{{ entry.account.name }}</td>
+                            <td class="text-end">${{ entry.debit }}</td>
+                            <td class="text-end">${{ entry.credit }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-muted">No data available.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header"><h5>Balance Sheet</h5></div>
+            <div class="card-body">
+                <h6>Assets</h6>
+                {% for account in assets %}
+                <div class="d-flex justify-content-between">
+                    <span>{{ account.name }}</span>
+                    <span>${{ account.balance|default:"0.00" }}</span>
+                </div>
+                {% empty %}
+                <p class="text-muted">No asset accounts.</p>
+                {% endfor %}
+
+                <hr>
+                <h6>Liabilities</h6>
+                {% for account in liabilities %}
+                <div class="d-flex justify-content-between">
+                    <span>{{ account.name }}</span>
+                    <span>${{ account.balance|default:"0.00" }}</span>
+                </div>
+                {% empty %}
+                <p class="text-muted">No liability accounts.</p>
+                {% endfor %}
+
+                <hr>
+                <h6>Equity</h6>
+                {% for account in equity %}
+                <div class="d-flex justify-content-between">
+                    <span>{{ account.name }}</span>
+                    <span>${{ account.balance|default:"0.00" }}</span>
+                </div>
+                {% empty %}
+                <p class="text-muted">No equity accounts.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header"><h5>Income Statement</h5></div>
+            <div class="card-body">
+                <h6>Revenue</h6>
+                {% for account in revenue %}
+                <div class="d-flex justify-content-between">
+                    <span>{{ account.name }}</span>
+                    <span>${{ account.balance|default:"0.00" }}</span>
+                </div>
+                {% empty %}
+                <p class="text-muted">No revenue accounts.</p>
+                {% endfor %}
+
+                <hr>
+                <h6>Expenses</h6>
+                {% for account in expenses %}
+                <div class="d-flex justify-content-between">
+                    <span>{{ account.name }}</span>
+                    <span>${{ account.balance|default:"0.00" }}</span>
+                </div>
+                {% empty %}
+                <p class="text-muted">No expense accounts.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
