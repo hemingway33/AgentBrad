@@ -56,18 +56,52 @@ class GamificationViewSet(viewsets.ViewSet):
         """Get user's gamification status"""
         service = GamificationService(request.user)
         level = service.get_user_level()
-        
-        return Response({
-            'level': {
+
+        level_data = None
+        if level:
+            level_data = {
                 'name': level.name,
                 'number': level.level_number,
                 'icon': level.icon,
                 'perks': level.perks
-            },
+            }
+
+        return Response({
+            'level': level_data,
             'points': service._calculate_total_points(),
             'available_rewards': self._format_rewards(service.get_available_rewards()),
             'active_challenges': self._format_challenges(service.get_active_challenges())
         })
+
+    def _format_rewards(self, rewards):
+        """Format reward queryset for API response"""
+        return [
+            {
+                'id': reward.id,
+                'name': reward.name,
+                'description': reward.description,
+                'points_required': reward.points_required,
+                'reward_type': reward.reward_type,
+            }
+            for reward in rewards
+        ]
+
+    def _format_challenges(self, challenges):
+        """Format challenge queryset for API response"""
+        return [
+            {
+                'id': uc.id,
+                'title': uc.challenge.title,
+                'description': uc.challenge.description,
+                'challenge_type': uc.challenge.challenge_type,
+                'points_reward': uc.challenge.points_reward,
+                'start_date': uc.start_date,
+                'end_date': uc.end_date,
+                'progress': uc.progress,
+                'status': uc.status,
+            }
+            for uc in challenges
+        ]
     
     @action(detail=False, methods=['post'])
     def redeem_reward(self, request):

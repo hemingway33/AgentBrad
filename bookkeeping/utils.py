@@ -1,4 +1,5 @@
 from decimal import Decimal
+from django.db.models import Sum
 from .models import Account, Transaction, TransactionLine
 
 def calculate_account_balance(account, as_of_date=None):
@@ -7,8 +8,8 @@ def calculate_account_balance(account, as_of_date=None):
     if as_of_date:
         query = query.filter(transaction__date__lte=as_of_date)
     
-    debits = query.aggregate(total=models.Sum('debit_amount'))['total'] or Decimal('0')
-    credits = query.aggregate(total=models.Sum('credit_amount'))['total'] or Decimal('0')
+    debits = query.aggregate(total=Sum('debit_amount'))['total'] or Decimal('0')
+    credits = query.aggregate(total=Sum('credit_amount'))['total'] or Decimal('0')
     
     if account.account_type in ['ASSET', 'EXPENSE']:
         return debits - credits

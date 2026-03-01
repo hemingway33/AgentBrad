@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}New Transaction - AgentBrad{% endblock %}
+
+{% block content %}
+<h1>Create Transaction</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+
+    <h4 class="mt-4">Transaction Lines</h4>
+    <p class="text-muted">Total debits must equal total credits.</p>
+    {{ lines_formset.management_form }}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Account</th>
+                <th>Description</th>
+                <th>Debit</th>
+                <th>Credit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for form in lines_formset %}
+            <tr>
+                <td>{{ form.account }}</td>
+                <td>{{ form.description }}</td>
+                <td>{{ form.debit_amount }}</td>
+                <td>{{ form.credit_amount }}</td>
+                <td>{{ form.DELETE }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-primary">Save Transaction</button>
+    <a href="{% url 'bookkeeping:transaction-list' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

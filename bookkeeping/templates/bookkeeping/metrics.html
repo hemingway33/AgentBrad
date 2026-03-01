@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Metrics - AgentBrad{% endblock %}
+
+{% block content %}
+<h1>Business Metrics</h1>
+
+<div class="row mt-4">
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h6 class="card-subtitle mb-2 text-muted">Current Ratio</h6>
+                <h3>{{ metrics.current_ratio|default:"N/A" }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h6 class="card-subtitle mb-2 text-muted">Quick Ratio</h6>
+                <h3>{{ metrics.quick_ratio|default:"N/A" }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h6 class="card-subtitle mb-2 text-muted">Operating Cash Flow Ratio</h6>
+                <h3>{{ metrics.operating_cash_flow_ratio|default:"N/A" }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h6 class="card-subtitle mb-2 text-muted">Gross Profit Margin</h6>
+                <h3>{% if metrics.gross_profit_margin %}{{ metrics.gross_profit_margin }}%{% else %}N/A{% endif %}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h6 class="card-subtitle mb-2 text-muted">Debt-to-Equity Ratio</h6>
+                <h3>{{ metrics.debt_to_equity_ratio|default:"N/A" }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h6 class="card-subtitle mb-2 text-muted">A/R Turnover</h6>
+                <h3>{{ metrics.accounts_receivable_turnover|default:"N/A" }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

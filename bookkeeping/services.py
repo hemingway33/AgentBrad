@@ -1,3 +1,4 @@
+from django.conf import settings
 from intuitlib.client import AuthClient
 from intuitlib.enums import Scopes
 from quickbooks import QuickBooks
