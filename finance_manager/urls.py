@@ -6,4 +6,5 @@ urlpatterns = [
     path('api/', include('bookkeeping.api.urls')),
     path('api/auth/login/', CustomAuthToken.as_view(), name='api_token_auth'),
     path('api/auth/logout/', LogoutView.as_view(), name='api_token_logout'),
+    path('', include('credit_risk_ontology.urls')),
 ] 
